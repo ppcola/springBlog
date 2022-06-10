@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.offcn.mapper.UserMapper">
+    <insert id="insertUser" parameterType="com.offcn.bean.User">
+        INSERT INTO USER(uname,age,phone) VALUES (#{uname},#{age},#{phone})
+    </insert>
+    <update id="update" parameterType="com.offcn.bean.User">
+        UPDATE USER SET uname=#{uname},age=#{age},phone=#{phone} WHERE uid=#{uid}
+    </update>
+    <select id="queryAll" resultType="com.offcn.bean.User">
+    select * from user
+  </select>
+    <select id="queryByUid" resultType="com.offcn.bean.User">
+        select * from user where uid = #{uid}
+    </select>
+    <select id="queryLike" parameterType="string" resultType="com.offcn.bean.User">
+        /*SELECT * FROM USER WHERE uname LIKE "%"#{uname}"%"*/
+        SELECT * FROM USER WHERE uname LIKE CONCAT('%',#{uname},'%')
+    </select>
+</mapper>
