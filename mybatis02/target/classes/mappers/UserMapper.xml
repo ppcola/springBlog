@@ -17,6 +17,7 @@
     </select>
     <select id="queryLike" parameterType="string" resultType="com.offcn.bean.User">
         /*SELECT * FROM USER WHERE uname LIKE "%"#{uname}"%"*/
+        /*只能用一个，注释要删除。*/
         SELECT * FROM USER WHERE uname LIKE CONCAT('%',#{uname},'%')
     </select>
 </mapper>

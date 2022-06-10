@@ -82,7 +82,7 @@ public class TestUser {
         SqlSession sqlSession = MybatisUtils.getSqlSession();
         UserMapper mapper = sqlSession.getMapper(UserMapper.class);
 
-        User user = new User(3,"杜丽丽",21,"1860332554");
+        User user = new User(2,"杨美丽",21,"1860332554");
 
         int row = mapper.update(user);
 
