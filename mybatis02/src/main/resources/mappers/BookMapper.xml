@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.offcn.mapper.BookMapper">
+    <resultMap id="bookMap" type="book">
+        <id column="bid" property="bid"></id>
+        <result column="bname" property="title"></result>
+        <result column="bprice" property="price"></result>
+    </resultMap>
+    <insert id="insert" parameterType="map">
+        INSERT INTO book (bname,bprice,bauthor,bdesc) VALUES(#{title},#{price},#{bauthor},#{bdesc})
+
+    </insert>
+    <delete id="delete" parameterType="int">
+        DELETE FROM book WHERE bid=#{bid}
+
+
+    </delete>
+    <select id="queryAll" resultMap="bookMap" >
+        SELECT * FROM book
+    </select>
+    <select id="queryByAuthorAndTitle" resultMap="bookMap">
+        SELECT * FROM booK WHERE bname=#{arg0} AND  bauthor=#{arg1}
+    </select>
+</mapper>

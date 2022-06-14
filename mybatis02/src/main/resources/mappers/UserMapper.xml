@@ -3,21 +3,54 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.offcn.mapper.UserMapper">
-    <insert id="insertUser" parameterType="com.offcn.bean.User">
+    <insert id="insertUser" parameterType="user">
         INSERT INTO USER(uname,age,phone) VALUES (#{uname},#{age},#{phone})
     </insert>
-    <update id="update" parameterType="com.offcn.bean.User">
+    <update id="update" parameterType="user">
         UPDATE USER SET uname=#{uname},age=#{age},phone=#{phone} WHERE uid=#{uid}
     </update>
-    <select id="queryAll" resultType="com.offcn.bean.User">
+    <delete id="delMany" >
+        DELETE FROM USER
+        <where>
+            uid IN
+            <foreach collection="array" item="uid" open="(" separator="," close=")">
+            #{uid}
+            </foreach>
+        </where>
+
+    </delete>
+    <select id="queryAll" resultType="user">
     select * from user
   </select>
-    <select id="queryByUid" resultType="com.offcn.bean.User">
+    <select id="queryByUid" resultType="user">
         select * from user where uid = #{uid}
     </select>
-    <select id="queryLike" parameterType="string" resultType="com.offcn.bean.User">
+    <select id="queryLike" parameterType="string" resultType="user">
         /*SELECT * FROM USER WHERE uname LIKE "%"#{uname}"%"*/
         /*只能用一个，注释要删除。*/
         SELECT * FROM USER WHERE uname LIKE CONCAT('%',#{uname},'%')
+    </select>
+    <select id="queryByCondition" parameterType="string" resultType="user">
+        SELECT * FROM USER
+         <where>
+             <if test="uname!=null and uname!=''">
+                 uname=#{uname}
+             </if>
+             <if test="phone!=null and phone!='' ">
+                 AND phone=#{phone}
+             </if>
+         </where>
+
+    </select>
+
+    <select id="queryByUids" resultType="user">
+        SELECT * FROM USER
+        <where>
+        uid IN
+            <foreach collection="list" item="uid" open="(" separator="," close=")">
+                #{uid}
+            </foreach>
+        </where>
+
     </select>
 </mapper>

@@ -1,6 +1,10 @@
 package com.offcn.test;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.offcn.bean.Book;
 import com.offcn.bean.User;
+import com.offcn.mapper.BookMapper;
 import com.offcn.mapper.UserMapper;
 import com.offcn.utils.MybatisUtils;
 import org.apache.ibatis.io.Resources;
@@ -11,7 +15,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestUser {
 
@@ -103,6 +110,126 @@ public class TestUser {
             System.out.println(user);
         }
         sqlSession.close();
+    }
+
+    @Test
+
+    public void queryByCondition(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        List<User> userList = mapper.queryByCondition("", "");
+
+        for (User user : userList) {
+            System.out.println(user);
+        }
+
+        MybatisUtils.close(sqlSession);
+    }
+
+    @Test
+    public void delMany(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        int[] uids={3,5,6};
+        int row = mapper.delMany(uids);
+        sqlSession.commit();
+        System.out.println(row);
+        MybatisUtils.close(sqlSession);
+    }
+
+    @Test
+
+    public void queryByUids(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        List<Integer> uid = new ArrayList<Integer>();
+        uid.add(1);
+        uid.add(2);
+        List<User> userList = mapper.queryByUids(uid);
+
+        for (User user : userList) {
+            System.out.println(user);
+        }
+
+        MybatisUtils.close(sqlSession);
+    }
+
+    @Test
+
+    public void queryByPage(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+
+        //获取第1页，10条内容，默认查询总数count
+        PageHelper.startPage(1, 2);
+        List<User> list = mapper.queryAll();
+//用PageInfo对结果进行包装
+        PageInfo page = new PageInfo(list);
+
+        List list1 = page.getList();
+        for (Object o : list1) {
+            System.out.println(o);
+        }
+
+        MybatisUtils.close(sqlSession);
+    }
+
+
+    //=========================bookTest
+
+    @Test
+
+    public void bookQueryAll(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+
+        BookMapper mapper = sqlSession.getMapper(BookMapper.class);
+        List<Book> books = mapper.queryAll();
+
+        for (Book book : books) {
+            System.out.println(book);
+        }
+    }
+@Test
+    public void insertTest(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        BookMapper mapper = sqlSession.getMapper(BookMapper.class);
+
+        Map<String,Object> map=new HashMap<String, Object>();
+        map.put("title","mybatis教程");
+        map.put("price",45.3);
+        map.put("bauthor","刘志");
+        map.put("bdesc","后台持久层框架");
+
+
+        int row = mapper.insert(map);
+        sqlSession.commit();
+        System.out.println(row);
+
+        MybatisUtils.close(sqlSession);
+    }
+
+    @Test
+    public void delete(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        BookMapper mapper = sqlSession.getMapper(BookMapper.class);
+        int row = mapper.delete(3);
+        sqlSession.commit();
+        System.out.println(row);
+        MybatisUtils.close(sqlSession);
+    }
+
+    @Test
+    public void selectByNameAndAuthor(){
+
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        BookMapper mapper = sqlSession.getMapper(BookMapper.class);
+        List<Book> books = mapper.queryByAuthorAndTitle("刘华强", "JAVA编程思想");
+
+        for (Book book : books) {
+            System.out.println(book);
+        }
+
+        MybatisUtils.close(sqlSession);
     }
 
 }
