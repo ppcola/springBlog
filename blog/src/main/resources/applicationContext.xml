@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:contet="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--加载属性配置文件jdbc.properties-->
+    <contet:property-placeholder location="classpath:jdbc.properties"></contet:property-placeholder>
+
+    <!--开启spring注解扫描包-->
+    <context:component-scan base-package="com.offcn"></context:component-scan>
+
+    <!--原生数据源-->
+    <bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${mysql.driver}"></property>
+        <property name="url" value="${mysql.url}"></property>
+        <property name="username" value="${mysql.username}"></property>
+        <property name="password" value="${mysql.password}"></property>
+    </bean>
+
+    <!--配置SqlSessionFactoryBean-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--配置数据源-->
+        <property name="dataSource" ref="ds"/>
+        <!--配置别名-->
+        <property name="typeAliasesPackage" value="com.offcn.bean,com.offcn.vo"/>
+        <!--加载mybatis的核心配置文件 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--加载SQL映射文件 -->
+        <property name="mapperLocations" value="classpath:mappers/*.xml"/>
+        <!--配置分页插件-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <!--使用下面的方式配置参数，一行配置一个 -->
+                        <value>
+                            helperDialect=mysql
+                            reasonable=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <!--配置扫描接口路径，创建代理对象-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.offcn.mapper"></property>
+    </bean>
+</beans>
